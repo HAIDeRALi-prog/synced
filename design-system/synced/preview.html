@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ink &amp; Slate — Synced Design System Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Crimson+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F8FAFC;
+    --ink: #0F172A;
+    --card: #FFFFFF;
+    --navy: #1E3A5F;
+    --muted: #E9EEF5;
+    --muted-fg: #475569;
+    --hairline: #CBD5E1;
+    --outline: #64748B;
+    --gold: #B45309;
+    --on-gold: #FFFFFF;
+    --gold-container: #FEF3C7;
+    --gold-container-fg: #78350F;
+    --danger: #DC2626;
+    --banner-bg: #B45309;
+    --banner-fg: #FFFFFF;
+    --shadow-md: 0 4px 6px rgba(15, 23, 42, .07);
+    --shadow-lg: 0 10px 15px rgba(15, 23, 42, .10);
+    --radius-card: 12px;
+    --radius-control: 8px;
+  }
+  [data-theme="dark"] {
+    --paper: #020617;
+    --ink: #F8FAFC;
+    --card: #0E1223;
+    --navy: #CBD5E1;
+    --muted: #1A1E2F;
+    --muted-fg: #94A3B8;
+    --hairline: #334155;
+    --outline: #64748B;
+    --gold: #F59E0B;
+    --on-gold: #0F172A;
+    --gold-container: #3F2D0F;
+    --gold-container-fg: #FDE68A;
+    --danger: #FFB4AB;
+    --banner-bg: #F59E0B;
+    --banner-fg: #0F172A;
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, .4);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, .5);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 16px/1.5 "Atkinson Hyperlegible", sans-serif;
+    transition: background 200ms ease, color 200ms ease;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+  header.top {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    align-items: baseline; justify-content: space-between;
+    padding-bottom: 24px; margin-bottom: 32px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  h1 { font: 600 40px/1.15 "Crimson Pro", serif; margin: 0; }
+  .kicker {
+    font: 700 12px/1.4 "Atkinson Hyperlegible", sans-serif;
+    letter-spacing: .8px; text-transform: uppercase; color: var(--gold);
+    margin: 0 0 4px;
+  }
+  .sub { color: var(--muted-fg); font-size: 14px; margin: 6px 0 0; }
+  .toggle {
+    font: 700 13px/1 "Atkinson Hyperlegible", sans-serif;
+    letter-spacing: .6px; text-transform: uppercase;
+    background: var(--card); color: var(--ink);
+    border: 1px solid var(--hairline); border-radius: var(--radius-control);
+    padding: 12px 18px; min-height: 44px; cursor: pointer;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+  }
+  .toggle:hover { border-color: var(--outline); }
+  h2 {
+    font: 600 26px/1.25 "Crimson Pro", serif;
+    margin: 48px 0 4px;
+  }
+  .h2note { color: var(--muted-fg); font-size: 14px; margin: 0 0 16px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .swatch {
+    background: var(--card); border: 1px solid var(--hairline);
+    border-radius: var(--radius-card); overflow: hidden;
+  }
+  .swatch .chip { height: 72px; border-bottom: 1px solid var(--hairline); }
+  .swatch .meta { padding: 10px 12px 12px; }
+  .swatch .role { font: 700 11px/1.4 sans-serif; letter-spacing: .7px; text-transform: uppercase; color: var(--muted-fg); }
+  .swatch .hex { font-size: 14px; margin-top: 2px; }
+  .type-sample { background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-card); padding: 16px; }
+  .type-sample .label {
+    font: 700 11px/1.4 sans-serif; letter-spacing: .7px; text-transform: uppercase;
+    color: var(--muted-fg); margin-bottom: 6px;
+  }
+  .type-sample .spec { font-size: 12px; color: var(--muted-fg); margin-top: 6px; }
+  .t-display { font: 700 48px/1.1 "Crimson Pro", serif; }
+  .t-headline { font: 600 32px/1.2 "Crimson Pro", serif; }
+  .t-title-lg { font: 600 22px/1.27 "Crimson Pro", serif; }
+  .t-title-md { font: 700 16px/1.5 "Atkinson Hyperlegible", sans-serif; }
+  .t-body { font: 400 16px/1.5 "Atkinson Hyperlegible", sans-serif; }
+  .t-label {
+    font: 700 12px/1.4 "Atkinson Hyperlegible", sans-serif;
+    letter-spacing: .8px; text-transform: uppercase;
+  }
+  .cols { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+
+  /* Components (mirror Compose implementations) */
+  .card {
+    background: var(--card); border: 1px solid var(--hairline);
+    border-radius: var(--radius-card); padding: 8px;
+    cursor: pointer; transition: box-shadow 200ms ease, border-color 200ms ease;
+  }
+  .card:hover { box-shadow: var(--shadow-lg); border-color: var(--outline); }
+  .card:focus-visible, .btn:focus-visible, .toggle:focus-visible {
+    outline: 2px solid var(--navy); outline-offset: 2px;
+  }
+  .card .row { display: flex; align-items: center; gap: 8px; }
+  .slug { font: 700 12px/1.4 "Atkinson Hyperlegible", sans-serif; letter-spacing: .8px; color: var(--gold); }
+  .author {
+    font: 400 11px/1.4 "Atkinson Hyperlegible", sans-serif;
+    letter-spacing: .5px; text-transform: uppercase; color: var(--muted-fg);
+    text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .card h3 { font: 600 22px/1.27 "Crimson Pro", serif; margin: 8px 0 0; }
+  .card p { font: 400 14px/1.43 "Atkinson Hyperlegible", sans-serif; color: var(--muted-fg); margin: 8px 0 0; }
+
+  .banner {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--banner-bg); color: var(--banner-fg);
+    padding: 8px; border-radius: 0;
+    font: 700 12px/1.4 "Atkinson Hyperlegible", sans-serif;
+    letter-spacing: .6px; text-transform: uppercase;
+  }
+  .banner svg { width: 16px; height: 16px; flex: none; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 48px; padding: 12px 24px;
+    background: var(--gold); color: var(--on-gold);
+    border: none; border-radius: var(--radius-control);
+    font: 700 14px/1 "Atkinson Hyperlegible", sans-serif; cursor: pointer;
+    transition: filter 180ms ease, transform 180ms ease;
+  }
+  .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); filter: brightness(.95); }
+  .btn[disabled] { opacity: .5; cursor: not-allowed; transform: none; filter: none; }
+  .btn-ghost {
+    background: transparent; color: var(--ink);
+    border: 2px solid var(--ink);
+  }
+  .btn-ghost:hover { background: var(--muted); filter: none; }
+
+  .state {
+    background: var(--card); border: 1px solid var(--hairline);
+    border-radius: var(--radius-card); padding: 32px 16px; text-align: center;
+  }
+  .state .state-title { font: 600 26px/1.25 "Crimson Pro", serif; }
+  .state .state-note { color: var(--muted-fg); font-size: 14px; margin-top: 4px; }
+
+  .chip-tint {
+    display: inline-block; background: var(--gold-container); color: var(--gold-container-fg);
+    border-radius: 4px; padding: 6px 10px;
+    font: 700 12px/1.4 sans-serif; letter-spacing: .7px; text-transform: uppercase;
+  }
+
+  table.tokens { border-collapse: collapse; width: 100%; font-size: 14px; }
+  table.tokens th, table.tokens td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--hairline); }
+  table.tokens th { font: 700 11px/1.4 sans-serif; letter-spacing: .7px; text-transform: uppercase; color: var(--muted-fg); }
+  table.tokens td:first-child { font-family: ui-monospace, monospace; }
+  .note { color: var(--muted-fg); font-size: 13px; }
+  footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--hairline); color: var(--muted-fg); font-size: 13px; }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="kicker">Synced · Design System</p>
+      <h1>Ink &amp; Slate</h1>
+      <p class="sub">Scholarly navy + citation gold · Crimson Pro / Atkinson Hyperlegible · light &amp; dark</p>
+    </div>
+    <button class="toggle" id="themeToggle" aria-pressed="false">Switch to dark</button>
+  </header>
+
+  <h2>Color palette</h2>
+  <p class="h2note">Semantic tokens from <code>design-system/synced/MASTER.md</code> — text pairs meet WCAG AA (4.5:1), non-text UI 3:1.</p>
+  <div class="grid" id="palette"></div>
+
+  <h2>Typography</h2>
+  <p class="h2note">Crimson Pro for display/headline/title roles · Atkinson Hyperlegible for UI titles, body and labels.</p>
+  <div class="cols">
+    <div class="type-sample"><div class="label">Display / Headline</div><div class="t-display">Reading, synced</div><div class="spec">Crimson Pro 700 · 48/53</div></div>
+    <div class="type-sample"><div class="label">Headline</div><div class="t-headline">Offline-first articles</div><div class="spec">Crimson Pro 600 · 32/38</div></div>
+    <div class="type-sample"><div class="label">Title Large (card headline)</div><div class="t-title-lg">Why Room is the source of truth</div><div class="spec">Crimson Pro 600 · 22/28</div></div>
+    <div class="type-sample"><div class="label">Title Medium</div><div class="t-title-md">Comments synced for offline</div><div class="spec">Atkinson Hyperlegible 700 · 16/24</div></div>
+    <div class="type-sample"><div class="label">Body</div><div class="t-body">The cache is only replaced after a fully successful network sync, so a partial response never corrupts what is on screen.</div><div class="spec">Atkinson Hyperlegible 400 · 16/24</div></div>
+    <div class="type-sample"><div class="label">Label (tracked meta)</div><div class="t-label">Ada Lovelace · 12 min read</div><div class="spec">Atkinson Hyperlegible 700 · 12/17 · +0.8px</div></div>
+  </div>
+
+  <h2>Components</h2>
+  <p class="h2note">Mirrors the Compose implementations: ContentCard, OfflineBanner, AppButton, StateMessage.</p>
+  <div class="cols">
+    <div>
+      <div class="banner" role="status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="2" y1="2" x2="22" y2="22"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/>
+          <path d="M2 8.8a15 15 0 0 1 4.2-2.6"/><path d="M10.7 5c4-.4 8.1.9 11.3 3.8"/>
+          <path d="M16.9 11.3a10 10 0 0 1 2.2 1.7"/><path d="M5 13a10 10 0 0 1 5.2-2.8"/>
+          <line x1="12" y1="20" x2="12.01" y2="20"/>
+        </svg>
+        Offline — showing saved content
+      </div>
+      <p class="note" style="margin:8px 0 24px;">OfflineBanner · accent band + uppercase status label (announced as a status, not color-only)</p>
+
+      <div class="card" tabindex="0" role="button" aria-label="Open post: The single transaction that keeps the feed honest">
+        <div class="row"><span class="slug">07</span><span class="author">Grace Hopper</span></div>
+        <h3>The single transaction that keeps the feed honest</h3>
+        <p>Why we swap the entire Room cache only after a fully successful sync — and never before.</p>
+      </div>
+      <p class="note" style="margin:8px 0 24px;">ContentCard · numbered gold slug, uppercase author meta, serif headline, 12dp corners</p>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="btn">Retry sync</button>
+        <button class="btn btn-ghost">Not now</button>
+        <button class="btn" disabled>Syncing…</button>
+      </div>
+      <p class="note" style="margin:8px 0 0;">AppButton · 48dp min touch target, 8dp corners, visible focus ring, pressed feedback without layout shift</p>
+    </div>
+
+    <div>
+      <div class="state">
+        <div class="state-title">Nothing saved yet</div>
+        <div class="state-note">Connect once and your feed will be available offline.</div>
+      </div>
+      <p class="note" style="margin:8px 0 24px;">StateMessage · empty / error state, serif title + muted note</p>
+      <div class="type-sample">
+        <div class="label">Chip / tinted container</div>
+        <span class="chip-tint">Synced · page 1 of 4</span>
+        <div class="spec" style="margin-top:12px;">tertiaryContainer <span style="font-family:ui-monospace,monospace">#FEF3C7</span> / onTertiaryContainer <span style="font-family:ui-monospace,monospace">#78350F</span> — dark: <span style="font-family:ui-monospace,monospace">#3F2D0F</span> / <span style="font-family:ui-monospace,monospace">#FDE68A</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Spacing &amp; shapes</h2>
+  <p class="h2note">4/8dp rhythm, crisp radii — 12dp cards, 8dp controls, no pills.</p>
+  <table class="tokens">
+    <thead><tr><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
+    <tbody>
+      <tr><td>space-xxs</td><td>4 dp</td><td>Hairline gaps (icon ↔ label)</td></tr>
+      <tr><td>space-xs</td><td>8 dp</td><td>Between list items, card padding</td></tr>
+      <tr><td>space-sm</td><td>16 dp</td><td>Screen gutters</td></tr>
+      <tr><td>space-md</td><td>24 dp</td><td>Section spacing</td></tr>
+      <tr><td>space-lg</td><td>32 dp</td><td>Major block spacing</td></tr>
+      <tr><td>radius-card / control</td><td>12 dp / 8 dp</td><td>Cards / buttons &amp; inputs</td></tr>
+    </tbody>
+  </table>
+
+  <footer>
+    Generated for Synced · source of truth: <code>design-system/synced/MASTER.md</code> · fonts loaded from Google Fonts (the Android app bundles them offline in <code>res/font/</code>).
+  </footer>
+</div>
+
+<script>
+  const palette = [
+    ["Primary (navy)", "#1E3A5F"], ["Secondary", "#334155"], ["Accent / CTA (gold)", "#B45309"],
+    ["Background", "#F8FAFC"], ["Foreground (ink)", "#0F172A"], ["Card", "#FFFFFF"],
+    ["Muted", "#E9EEF5"], ["Muted foreground", "#475569"], ["Border", "#CBD5E1"],
+    ["Destructive", "#DC2626"], ["Gold tint container", "#FEF3C7"], ["Gold tint text", "#78350F"]
+  ];
+  const darkPalette = {
+    "#1E3A5F": "#020617", "#334155": "#0E1223", "#B45309": "#F59E0B", "#F8FAFC": "#020617",
+    "#0F172A": "#F8FAFC", "#FFFFFF": "#0E1223", "#E9EEF5": "#1A1E2F", "#475569": "#94A3B8",
+    "#CBD5E1": "#334155", "#DC2626": "#FFB4AB", "#FEF3C7": "#3F2D0F", "#78350F": "#FDE68A"
+  };
+  const root = document.documentElement;
+  const toggle = document.getElementById("themeToggle");
+  const isDark = () => root.getAttribute("data-theme") === "dark";
+  function renderPalette() {
+    document.getElementById("palette").innerHTML = palette.map(([role, hex]) => {
+      const shown = isDark() ? (darkPalette[hex] || hex) : hex;
+      const border = /^#(FFFFFF|F8FAFC|E9EEF5|FEF3C7)$/.test(shown) ? "box-shadow: inset 0 0 0 1px var(--hairline);" : "";
+      return `<div class="swatch"><div class="chip" style="background:${shown};${border}"></div>
+        <div class="meta"><div class="role">${role}</div><div class="hex">${shown}</div></div></div>`;
+    }).join("");
+  }
+  function setTheme(dark) {
+    root.setAttribute("data-theme", dark ? "dark" : "light");
+    toggle.textContent = dark ? "Switch to light" : "Switch to dark";
+    toggle.setAttribute("aria-pressed", String(dark));
+    renderPalette();
+  }
+  toggle.addEventListener("click", () => setTheme(!isDark()));
+  setTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
+</script>
+</body>
+</html>
