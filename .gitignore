@@ -31,3 +31,7 @@ Thumbs.db
 # Logs & profiling
 *.hprof
 *.log
+
+# Python bytecode (skill scripts)
+__pycache__/
+*.pyc
